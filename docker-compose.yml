@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./ZenZen-Frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+  dashboard:
+    build:
+      context: ./ZenZen-Dashbaord
+    container_name: Dashboard
+    ports:
+      - "3000:80"
+  mysqldb:
+    image: mysql:8.0.32
+    container_name: zenzendb
+    environment:
+      MYSQL_ROOT_PASSWORD: Zenzen@!@#
+      MYSQL_DATABASE: cnc_mern_truffle
+      MYSQL_USER: zenzendbuser
+      MYSQL_PASSWORD: Zenzen@!@#
+    ports:
+      - "3306:3306"
+    volumes:
+      - "zenzendbdata:/var/lib/mysql"
+  phpmyadmin90:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma90
+    links:
+      - mysqldb
+    environment:
+      PMA_HOST: mysqldb
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 300M
+    depends_on:
+    - mysqldb
+    ports:
+      - 9090:80
+  backend:
+    build:
+      context: ./ZenZen-Backend
+    container_name: backend
+    ports:
+      - "8099:8099"
+volumes:
+  zenzendbdata:
+
